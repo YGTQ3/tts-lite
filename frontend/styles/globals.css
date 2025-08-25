@@ -1,0 +1,356 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --accent: #3B82F6;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #E0F2FE 0%, #93C5FD 100%);
+  color: #1E3A8A;
+  min-height: 100vh;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* 导航栏下拉菜单动画 */
+.glass-nav .group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.glass-nav .group .group-hover\:opacity-100 {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #3B82F6, #60A5FA);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.bg-animate {
+  animation: gradientShift 30s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.mobile-menu {
+  transition: all 0.3s ease;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.mobile-menu.active {
+  max-height: 500px;
+}
+
+.dialect-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dialect-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.dialect-option:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.dialect-option.active {
+  background: white;
+  border: 1px solid #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.dialect-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #3B82F6;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.dialect-name {
+  font-size: 14px;
+  color: #1E3A8A;
+}
+
+.secondary-text {
+  color: #4B5563;
+}
+
+/* 新增的推荐标签样式 */
+.pricing-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.recommended-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--accent);
+  color: white;
+  padding: 4px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px 0 8px 0;
+  transform: translate(-2px, 2px);
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.pricing-card.recommended {
+  padding-top: 24px;
+}
+
+/* 音频波形动画 */
+@keyframes wave {
+  0%, 100% { height: 10px; }
+  50% { height: 30px; }
+}
+
+.wave-bar {
+  animation: wave 1s ease-in-out infinite;
+}
+
+/* 脉冲动画增强 */
+@keyframes pulse-enhanced {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.pulse-enhanced {
+  animation: pulse-enhanced 2s ease-in-out infinite;
+}
+
+/* 进度条动画 */
+@keyframes progress-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.progress-shimmer {
+  background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 50%, #3B82F6 100%);
+  background-size: 200px 100%;
+  animation: progress-shimmer 2s infinite;
+}
+
+/* 响应式设计增强 */
+@media (max-width: 768px) {
+  /* 导航栏移动端优化 */
+  .glass-nav {
+    padding: 12px 16px;
+  }
+
+  /* 主要内容区域 */
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* 方言选择器移动端优化 */
+  .dialect-selector {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .dialect-option {
+    flex: 1;
+    min-width: calc(50% - 4px);
+    max-width: calc(50% - 4px);
+    padding: 10px 12px;
+  }
+
+  .dialect-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .dialect-name {
+    font-size: 12px;
+  }
+
+  /* 玻璃卡片移动端优化 */
+  .glass-card {
+    margin: 0 8px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  /* 文本区域移动端优化 */
+  textarea {
+    min-height: 120px;
+    font-size: 16px; /* 防止iOS缩放 */
+  }
+
+  /* 按钮移动端优化 */
+  .btn-primary {
+    padding: 14px 24px;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  /* 音频播放器移动端优化 */
+  .audio-player {
+    padding: 16px;
+  }
+
+  .audio-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .audio-progress {
+    order: -1;
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 超小屏幕优化 */
+  .glass-nav {
+    padding: 8px 12px;
+  }
+
+  .container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .dialect-option {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .glass-card {
+    margin: 0 4px;
+    padding: 12px;
+  }
+
+  /* 加载动画移动端优化 */
+  .loading-modal {
+    margin: 16px;
+  }
+
+  .loading-content {
+    padding: 24px 16px;
+  }
+}
+
+/* 平板设备优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dialect-selector {
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .dialect-option {
+    flex: 0 0 auto;
+    min-width: 120px;
+  }
+
+  .glass-card {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+/* 大屏幕优化 */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+
+  .glass-card {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .dialect-selector {
+    justify-content: center;
+    gap: 20px;
+  }
+}
