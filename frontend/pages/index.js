@@ -243,8 +243,7 @@ export default function Home() {
       {/* 页脚 */}
       <footer className="py-12">
         <div className="container mx-auto px-6 text-center secondary-text">
-          <p>© 2024 Qwen-TTS. All rights reserved.</p>
-          <p className="mt-4">页面内容均由 AI 生成，仅供参考</p>
+          <p>© 2024 TTS-lite. All rights reserved.</p>
         </div>
       </footer>
     </div>
