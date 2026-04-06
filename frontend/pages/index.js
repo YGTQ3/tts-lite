@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import AudioPlayer from '../components/AudioPlayer';
@@ -10,6 +10,62 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState('');
   const [error, setError] = useState('');
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
+  
+  const maxChars = 500;
+  const charCount = text.length;
+  const isOverLimit = charCount > maxChars;
+  const isNearLimit = charCount > maxChars * 0.8 && !isOverLimit;
+  
+  // 加载历史记录
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('tts-history');
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error('加载历史记录失败:', e);
+      }
+    }
+  }, []);
+  
+  // 保存到历史记录
+  const saveToHistory = (text, dialect, audioUrl) => {
+    const newRecord = {
+      id: Date.now(),
+      text: text.substring(0, 100) + (text.length > 100 ? '...' : ''),
+      fullText: text,
+      dialect,
+      audioUrl,
+      createdAt: new Date().toISOString()
+    };
+    
+    const updatedHistory = [newRecord, ...history].slice(0, 10); // 只保留最近 10 条
+    setHistory(updatedHistory);
+    localStorage.setItem('tts-history', JSON.stringify(updatedHistory));
+  };
+  
+  // 清除历史记录
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('tts-history');
+  };
+  
+  // 从历史记录中删除单条
+  const deleteHistoryItem = (id) => {
+    const updatedHistory = history.filter(item => item.id !== id);
+    setHistory(updatedHistory);
+    localStorage.setItem('tts-history', JSON.stringify(updatedHistory));
+  };
+  
+  // 使用历史记录
+  const useHistoryItem = (item) => {
+    setText(item.fullText);
+    setDialect(item.dialect);
+    setAudioUrl(item.audioUrl);
+    setShowHistory(false);
+  };
 
   const handleGenerate = async () => {
     // 输入验证
@@ -45,6 +101,8 @@ export default function Home() {
 
         if (data.audio_url) {
           setAudioUrl(data.audio_url);
+          // 保存到历史记录
+          saveToHistory(text, dialect, data.audio_url);
         } else {
           setError('语音生成失败：未返回音频文件');
         }
@@ -90,13 +148,40 @@ export default function Home() {
               rows="4"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white bg-opacity-50 border border-white border-opacity-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all text-sm sm:text-base"
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 bg-white bg-opacity-50 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all text-sm sm:text-base ${
+                isOverLimit 
+                  ? 'border-red-500 border-opacity-100' 
+                  : isNearLimit 
+                    ? 'border-yellow-500 border-opacity-80' 
+                    : 'border-white border-opacity-50'
+              }`}
               placeholder="请输入要转换为语音的文本..."
               style={{ minHeight: '100px' }}
             />
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 space-y-1 sm:space-y-0">
-              <div className="text-xs sm:text-sm secondary-text">
+              <div className={`text-xs sm:text-sm font-medium ${
+                isOverLimit 
+                  ? 'text-red-600' 
+                  : isNearLimit 
+                    ? 'text-yellow-600' 
+                    : 'secondary-text'
+              }`}>
                 {charCount}/{maxChars} 字符
+                {isOverLimit && '（已超出限制）'}
+                {isNearLimit && '（接近限制）'}
+              </div>
+              {/* 进度条 */}
+              <div className="w-full sm:w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full transition-all duration-300 ${
+                    isOverLimit 
+                      ? 'bg-red-500' 
+                      : isNearLimit 
+                        ? 'bg-yellow-500' 
+                        : 'bg-green-500'
+                  }`}
+                  style={{ width: `${Math.min((charCount / maxChars) * 100, 100)}%` }}
+                />
               </div>
             </div>
           </div>
@@ -156,10 +241,25 @@ export default function Home() {
             </div>
           )}
           
+          {/* 历史记录按钮 */}
+          <div className="mb-4 flex justify-between items-center">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-1"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>历史记录 ({history.length})</span>
+            </button>
+          </div>
+          
           <button
             onClick={handleGenerate}
-            disabled={isGenerateButtonDisabled}
-            className="btn-primary w-full py-4 rounded-lg font-medium flex items-center justify-center"
+            disabled={isGenerateButtonDisabled || isOverLimit}
+            className={`btn-primary w-full py-4 rounded-lg font-medium flex items-center justify-center ${
+              isOverLimit ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             <span>{isLoading ? '正在生成语音，请稍候...' : '生成语音'}</span>
             {isLoading && (
@@ -191,6 +291,72 @@ export default function Home() {
               audioUrl={audioUrl}
               onClose={() => setAudioUrl('')}
             />
+          )}
+          
+          {/* 历史记录面板 */}
+          {showHistory && (
+            <div className="mt-6 p-4 bg-white bg-opacity-70 rounded-lg border border-blue-200">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-blue-900">最近生成记录</h3>
+                <div className="flex space-x-2">
+                  {history.length > 0 && (
+                    <button
+                      onClick={clearHistory}
+                      className="text-xs text-red-600 hover:text-red-800 transition-colors"
+                    >
+                      清空全部
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setShowHistory(false)}
+                    className="text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              {history.length === 0 ? (
+                <p className="text-gray-500 text-sm py-4 text-center">暂无历史记录</p>
+              ) : (
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {history.map((item) => (
+                    <div key={item.id} className="p-3 bg-white bg-opacity-60 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                          {item.dialect === 'mandarin' && '普通话'}
+                          {item.dialect === 'shanghai' && '上海话'}
+                          {item.dialect === 'beijing' && '北京话'}
+                          {item.dialect === 'cantonese' && '粤语'}
+                          {item.dialect === 'sichuan' && '四川话'}
+                          {item.dialect === 'wu' && '吴语'}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {new Date(item.createdAt).toLocaleString('zh-CN')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-700 mb-2 line-clamp-2">{item.text}</p>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => useHistoryItem(item)}
+                          className="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        >
+                          使用
+                        </button>
+                        <button
+                          onClick={() => deleteHistoryItem(item.id)}
+                          className="text-xs px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+                        >
+                          删除
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           )}
         </div>
 
