@@ -1,69 +1,94 @@
+```
 # Dependencies
 node_modules/
-frontend/node_modules/
 
-# Next.js build files
-frontend/.next/
-frontend/out/
+# Editors
+.vscode/
 
-# Environment variables (contains sensitive information)
-frontend/.env.local
-frontend/.env.production.local
-frontend/.env.development.local
+# Environment
 .env
 .env.local
-.env.production
-.env.development
+.env.*
 
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
-coverage/
-*.lcov
-
-# IDE files
-.vscode/
-.idea/
+# Logs and temp files
+*.log
+*.tmp
 *.swp
-*.swo
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Build artifacts
+dist/
+build/
+*.o
+*.obj
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+.gradle/
+
+# C/C++
+*.so
+*.dll
+*.dylib
+*.a
+*.lib
+
+# Go
+*.o
+
+# Ruby
+*.gem
+*.rbc
+coverage/
+*.sqlite3
+
+# Rust
+target/
 
 # Temporary folders
 tmp/
 temp/
 
-# Build outputs
-dist/
-build/
+# OS generated files
+.DS_Store
+Thumbs.db
 
-# Package manager lock files (optional - you can keep package-lock.json)
-# package-lock.json
-# yarn.lock
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 
-# Vercel deployment files
-.vercel
-
-# Local data
-.cache/
-
-# Backup files
-*.backup
-*.bak
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+```
